@@ -26,11 +26,11 @@
 ## 3. ディレクトリ構成（Google Drive）
 
 ```
-API_Whisper_System/
-├── 01_Input_Audio        # 処理前の音声ファイル（mp3, m4a等）を投入
-├── 02_Processed_Audio    # 完了した音声の移動先
-├── 03_Text_Output        # 生成されたテキスト/Markdownの保存先
-└── 文字起こし管理シート     # スプレッドシート（参加者名簿・処理ログ）
+MeetingTranscript/
+├── 01_input       # 処理前の音声ファイル（mp3, m4a等）を投入
+├── 02_processed   # 完了した音声の移動先
+├── 03_output      # 生成されたテキスト/Markdownの保存先
+└── 04_management  # スプレッドシート（参加者名簿・処理ログ）
 ```
 
 ---
