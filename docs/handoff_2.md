@@ -23,19 +23,21 @@
 - [x] Googleスプレッドシート作成（MeetingTranscript / シート名：本日の参加者）
 - [x] Notion データベース作成・インテグレーション接続済み
 - [x] Geminiモデルを `gemini-2.5-flash-lite` に設定
-- [x] Notion連携を `notion-client` → `urllib.request` 直叩きに変更
+- [x] Notion連携を `notion-client` → `requests` ライブラリに変更
 - [x] NOTION_DATABASE_ID をColabシークレット経由に変更（ハードコードを廃止）
+- [x] **Notion連携の動作確認完了**（ページ作成・ブロック追記129件 成功）
 
 ### テスト実行中に解消したエラー
 - whisperx の `DiarizationPipeline` → `from whisperx.diarize import DiarizationPipeline` に修正
 - `use_auth_token` → `token` に修正
 - Google Sheets 認証 → `google.colab.auth.authenticate_user()` に修正
 - Notionプロパティ → 日付・参加者を本文冒頭に移動（プロパティはタイトルのみ）
+- Notion DBのタイトルプロパティ名 → `タイトル` ではなく `名前` が正しい
+- Notionブロック追記 → `POST` ではなく `PATCH /v1/blocks/{id}/children` が正しい
 
 ### 未解決・次のタスク
-- [ ] **実際に動かしてテスト**
-  - `gemini-2.5-flash-lite` のAPIモデルIDが正しいか確認（動かなければ Google AI Studio で確認）
-  - Notion へのページ作成・ブロック追加が正常に動くか確認
+- [ ] 実際の音声ファイルで全ステップ通しテスト
+- [ ] `gemini-2.5-flash-lite` の動作確認（モデルIDが正しいか）
 
 ---
 
@@ -46,7 +48,9 @@
 - Colabのシークレット機能でAPIキーを管理（コードに直書きしない）
   - 管理するシークレット：HF_TOKEN / GEMINI_API_KEY / NOTION_TOKEN / NOTION_DATABASE_ID
   - NOTION_DATABASE_ID の値：`43a5556c027349d18a35aafac5b54847`
-- Notion API は `notion-client` ライブラリを使わず `urllib.request` で直叩き（過去の実装に合わせた）
+- Notion API は `notion-client` ライブラリを使わず `requests` で直叩き
+  - ページ作成：`POST /v1/pages`
+  - ブロック追記：`PATCH /v1/blocks/{id}/children`（POSTではなくPATCH）
 - コードの更新があったときのみ「GitHubからノートブックを開き直す」運用
 
 ## レート制限メモ（2026-04-18時点）
