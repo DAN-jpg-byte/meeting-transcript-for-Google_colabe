@@ -7,8 +7,8 @@
 ## 📋 できること
 
 - 🎙️ **音声の文字起こし**（WhisperX / large-v3モデル）
-- 👥 **話者分離**（誰が話しているか自動識別）
-- 🤖 **AI整形**（GeminiでSPEAKER_XXを実名に置換 → 読みやすい対話形式に整形）
+- 👥 **話者分離**（Gemini AIが誰が話しているか自動識別）
+- 🤖 **AI整形**（誤字補正 → 話者分離の2段階処理で精度を担保）
 - 📝 **Notionへ自動出力**（日付・参加者情報つきでページ作成）
 - 📁 **処理済みファイルの自動整理**（Google Driveのフォルダ間を自動移動）
 - 📊 **処理ログの記録**（Googleスプレッドシートに日時・ファイル名・参加者を記録）
@@ -23,12 +23,11 @@
 - [Google AI Studio](https://aistudio.google.com/) アカウント（Gemini APIキー取得用・無料枠あり）
 - [Notion](https://www.notion.so/) アカウント + インテグレーション作成済み
 
-### Colabシークレット（4つ）
+### Colabシークレット（3つ）
 
 | シークレット名 | 取得場所 | 説明 |
 |---|---|---|
-| `HF_TOKEN` | Hugging Face → Settings → Access Tokens | 話者分離モデルのダウンロードに必要 |
-| `GEMINI_API_KEY` | Google AI Studio → APIキーを作成 | テキスト整形に使用 |
+| `GEMINI_API_KEY` | Google AI Studio → APIキーを作成 | 話者分離・テキスト整形に使用 |
 | `NOTION_TOKEN` | Notion → 設定 → インテグレーション | Notionへの書き込みに必要 |
 | `NOTION_DATABASE_ID` | NotionのデータベースURL内のID | 議事録の保存先DB |
 
@@ -71,8 +70,10 @@ MyDrive/
 ### 毎回の使い方
 
 ```
-1. 音声ファイル（.mp3 / .m4a / .wav）を
-   「MeetingTranscript/01_input/」に入れる
+1. 音声・動画ファイルを「MeetingTranscript/01_input/」に入れる
+   対応形式（音声）: mp3 / m4a / wav / aac / flac / ogg
+   対応形式（動画）: mp4 / mov / avi / mkv / webm / wmv
+   ※ 大文字拡張子（MP3・MP4等）も対応
 
 2. スプレッドシートの「本日の参加者」を
    今日の参加者に更新する
@@ -100,9 +101,8 @@ MyDrive/
 
 | 変数名 | デフォルト | 説明 |
 |---|---|---|
-| `GEMINI_MODEL` | `gemini-2.5-flash-lite` | 使用するGeminiモデル（無料枠あり） |
-| `SPEAKER_SAMPLE_CHARS` | `3000` | 話者特定に使う冒頭文字数 |
-| `CHUNK_SIZE` | `10000` | Gemini整形の分割単位（文字数） |
+| `GEMINI_MODEL` | `gemini-3.1-flash-lite-preview` | 使用するGeminiモデル（下記参照） |
+| `CHUNK_SIZE` | `10000` | Geminiへの分割単位（文字数） |
 
 ---
 
@@ -110,11 +110,50 @@ MyDrive/
 
 | ライブラリ | 用途 |
 |---|---|
-| [WhisperX](https://github.com/m-bain/whisperX) | 音声文字起こし・話者分離 |
-| [pyannote-audio](https://github.com/pyannote/pyannote-audio) | 話者ダイアライゼーション |
-| [Google Generative AI](https://ai.google.dev/) | テキスト整形（Gemini） |
+| [WhisperX](https://github.com/m-bain/whisperX) | 音声文字起こし（large-v3モデル） |
+| [Google Generative AI](https://ai.google.dev/) | 誤字補正・話者分離（Gemini） |
 | [gspread](https://github.com/burnash/gspread) | Googleスプレッドシート操作 |
 | Notion API（requests直叩き） | Notionへの議事録出力 |
+
+---
+
+## 🤖 Gemini モデルの選び方
+
+### 現在使用中のモデル
+`gemini-3.1-flash-lite-preview`（RPM: 15 / RPD: 500）
+
+### 利用可能なモデル一覧の取得方法
+
+Colabで以下を実行すると、その時点で使えるモデルが確認できます：
+
+```python
+import google.generativeai as genai
+genai.configure(api_key=GEMINI_API_KEY)
+
+for m in genai.list_models():
+    if 'generateContent' in m.supported_generation_methods:
+        print(m.name)
+```
+
+### テキスト出力モデルの無料枠比較（2026-04-19 時点）
+
+| モデル（API ID） | RPM | RPD | 備考 |
+|---|---|---|---|
+| `gemini-3.1-flash-lite-preview` | 15 | **500** | ← 現在使用・おすすめ |
+| `gemini-2.5-flash-lite` | 10 | 20 | 旧デフォルト |
+| `gemini-2.5-flash` | 5 | 20 | |
+| `gemini-3-flash-preview` | 5 | 20 | |
+
+> RPM = 1分あたりのリクエスト数 / RPD = 1日あたりのリクエスト数
+> レート制限の最新情報は [Google AI Studio](https://aistudio.google.com/rate-limit) で確認できます。
+
+### モデルを変更したいとき
+
+`notebook.ipynb` の Step2 の設定欄を変更するだけです：
+
+```python
+GEMINI_MODEL = 'gemini-3.1-flash-lite-preview'  # ← ここを変える
+```
 
 ---
 
