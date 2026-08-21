@@ -1,7 +1,7 @@
 # 引き継ぎドキュメント #4
 
 作成日: 2026-04-18
-更新日: 2026-04-19
+更新日: 2026-08-20
 
 ---
 
@@ -49,9 +49,13 @@
 - [x] **v2.0.0 タグ作成・push済み**
 
 ### 未解決・次のタスク
-- [ ] 長時間音声（実際の税理士ミーティング）での通しテスト
+- [ ] 長時間音声（実際の税理士ミーティング）での通しテスト（2026-08-20: batch_size修正後の再テスト待ち）
 - [ ] RPM制限（15回/分）に引っかかる場合はチャンク間に待ち時間を追加
 - [ ] 定期的な運用で問題が出ないか様子見
+
+### 追加で完了したこと（2026-08-20）
+- [x] notebook冒頭に「最終更新日」を追加（v2.0の日付と別管理）
+- [x] Step3（WhisperX）のGPUメモリ不足クラッシュに対応 → `batch_size` を16→4に削減（詳細は下記エラー表）
 
 ---
 
@@ -115,6 +119,7 @@ for m in genai.list_models():
 | Gemini出力に太字・役職が付く | プロンプト不足 | 明示ルールを追加 |
 | `CUDA driver version is insufficient` | CPUランタイムで実行 | T4 GPUランタイムに変更 |
 | `models/gemini-3.1-flash-lite is not found` | API IDが違った | `-preview` を付けて `gemini-3.1-flash-lite-preview` に修正 |
+| Step3実行中にカーネルが強制終了（表面上は`AttributeError: 'OutStream' object has no attribute 'watch_fd_thread'`が出るが、これはatexit時の副産物で本質ではない） | 1時間超の音声でWhisperX（large-v3, batch_size=16）がT4のGPUメモリを使い切りOOM | `batch_size` を16→4に削減（cell-8）。改善しなければ`compute_type`を`int8_float16`に変更する案あり |
 
 ---
 
