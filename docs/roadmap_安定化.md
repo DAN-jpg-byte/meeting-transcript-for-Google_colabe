@@ -33,7 +33,7 @@
 
 ### Step 1: 途中保存の土台と、WhisperX のチャンク単位保存
 
-- [ ] 変更ファイル: `notebook.ipynb`（Step 2 の設定セル、Step 3 の各セル）
+- [x] 変更ファイル: `notebook.ipynb`（Step 2 の設定セル、Step 3 の各セル）（2026-10-07 完了）
 - 実装イメージ:
   - Step 2 に `TEMP_DIR = f'{BASE_DIR}/04_temp'` を追加
   - 保存先の名前は `04_temp/{ファイル名}_{ファイルサイズ}/` にする
