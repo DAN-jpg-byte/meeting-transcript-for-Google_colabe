@@ -10,20 +10,24 @@
 
 ## Step 0: 準備（手元）
 
-- [ ] spec と roadmap をコミットする
-- [ ] Hugging Face で Community-1 の利用条件に同意済みか確認する（ユーザー作業）
+- [x] spec と roadmap をコミットする
+- [x] Hugging Face で Community-1 の利用条件に同意済みか確認する（ユーザー作業）
+  - ユーザーは「前回から設定は変えていないので同意済みのはず」と回答。OLDnotebook のログ（2026-04-18）にも Community-1 の読み込み成功の記録あり。念のため Step 1 のセルでも同意とトークンを確認する
   - 未同意なら: `pyannote/speaker-diarization-community-1` のページで同意 → Colab のシークレットに `HF_TOKEN`（Read 権限）を登録
 
 ## Step 1: 土台（インストール・認証・音声の用意）
 
 変更ファイル: `experiment_diarization.ipynb`（新規）
 
-- [ ] セル1: インストール（`pyannote.audio` 4.x）。本体と同じく、入れたらランタイムを再起動する
-- [ ] セル2: 設定と認証
+- [x] セル1（exp-2）: インストール（`pyannote.audio` 4.x）。本体と同じく、入れたらランタイムを再起動する
+- [x] セル2（exp-4）: 設定と認証
   - `HF_TOKEN` をシークレットから読む（なければ分かりやすいエラーで止まる）
   - Drive をマウント（Sheets・Notion・Gemini の認証は**しない**）
-  - ffmpeg / ffprobe の確認
-- [ ] セル3: `01_input` の音声を **コピー**して（移動しない）、16kHz・モノラルの wav に変換し、**音声の長さを表示**する
+  - ffmpeg / ffprobe の確認、GPU の確認
+  - Community-1 の利用条件に同意済みか確認（未同意・トークン無効なら案内して止まる）
+- [x] セル3（exp-6）: `01_input` の音声を **コピー**して（移動しない）、16kHz・モノラルの wav に変換し、**音声の長さを表示**する
+- 手元（Windows）で確認済み: セル3（合成音声で、コピー・変換・長さの表示・元ファイルが残ること・空フォルダのエラー）
+- **Colab では未確認**（インストール・HF_TOKEN・同意チェックは Colab でしか確かめられない）
 - ポイント: 入力音声は動かさない・消さない。Colab 側の `/content/work/` に作り、Drive の元は触らない
 
 **完了の目安**: Colab で上から実行して、音声の長さ（分）が表示される。
