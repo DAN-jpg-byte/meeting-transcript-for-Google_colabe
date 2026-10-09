@@ -44,7 +44,7 @@
 ノートブックは、直接 URL で開く（GitHub タブだとブランチが `main` に戻ることがある）:
 `https://colab.research.google.com/github/DAN-jpg-byte/meeting-transcript-for-Google_colabe/blob/experiment/diarization/experiment_diarization.ipynb`
 
-- [ ] **60分で試す**（`MAX_MINUTES = 60`）: Step 1-3 → 2-1 → 2-2（話者分離だけ）。見る点: 処理時間、GPU メモリ最大、Colab の RAM、検出人数、話者の割合
+- [x] **60分で試す**（2026-10-09 完了。149秒・GPU 1.6GB・2人・安定。詳細は結果の文書）（`MAX_MINUTES = 60`）: Step 1-3 → 2-1 → 2-2（話者分離だけ）。見る点: 処理時間、GPU メモリ最大、Colab の RAM、検出人数、話者の割合
 - [ ] **全体で試す**（`MAX_MINUTES = None`）: 話者分離だけ。同じ点を見る。メモリ不足で落ちたら、そこで止めて報告（→ 判断表）
 - [ ] **Step 5（クリップごとの文字起こし）を全体で**: 数十分かかる見込み。途中で切れても、もう一度実行すれば続きから再開する
 
